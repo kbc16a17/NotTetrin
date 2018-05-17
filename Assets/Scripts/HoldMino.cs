@@ -13,6 +13,7 @@ public class HoldMino : MonoBehaviour {
         if (obj != null) {
             Destroy(obj);
         }
+        Value = null;
     }
 
     public void Hold(int index) {

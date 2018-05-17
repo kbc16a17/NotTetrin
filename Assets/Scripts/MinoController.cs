@@ -16,9 +16,9 @@ public class MinoController : MonoBehaviour {
     private float fallAccelaration = 0.0f;
 
     public AnimationCurve softdropInCurve;
-    private int pressedFrame;
-    public int peekFrame = 60;
-    public float Speed = 5.0f;
+    private int pressedFrame = 0;
+    private static int peekFrame = 60;
+    private static float peekAccelaration = 5.0f;
 
     public event EventHandler Hit;
     public event EventHandler HitOnCeiling;
@@ -45,7 +45,7 @@ public class MinoController : MonoBehaviour {
 
             if (Input.GetKey(KeyCode.DownArrow)) {
                 pressedFrame = Mathf.Clamp(pressedFrame + 1, 0, peekFrame);
-                fallAccelaration = Speed * softdropInCurve.Evaluate((float)pressedFrame / peekFrame);
+                fallAccelaration = peekAccelaration * softdropInCurve.Evaluate((float)pressedFrame / peekFrame);
             } else {
                 pressedFrame = 0;
                 fallAccelaration *= 0.86f;
