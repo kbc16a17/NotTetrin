@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NextMino : MonoBehaviour {
+public class NextMinos : MonoBehaviour {
     public MinoSpawner spawner;
     public MinoResolver resolver;
     public Transform[] frames;
@@ -18,8 +18,10 @@ public class NextMino : MonoBehaviour {
         for (int i = 0; i < frames.Length; i++) {
             var index = spawner.NextIndices[i];
             var obj = Instantiate(resolver.Get(index), frames[i].position, Quaternion.identity);
-            obj.GetComponent<MinoController>().enabled = false;
-            obj.GetComponent<Rigidbody2D>().simulated = false;
+            obj.transform.localScale *= 0.75f;
+            Destroy(obj.GetComponent<MinoController>());
+            Destroy(obj.GetComponent<Rigidbody2D>());
+            Destroy(obj.transform.GetChild(0).gameObject);
             objects.Add(obj);
         }
     }

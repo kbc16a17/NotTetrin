@@ -26,6 +26,7 @@ public class MinoController : MonoBehaviour {
     // Use this for initialization
     void Start() {
         dropEffect = GetComponentInChildren<ParticleSystem>();
+        dropEffect.Play();
     }
 
     // Update is called once per frame
@@ -65,15 +66,12 @@ public class MinoController : MonoBehaviour {
 
             dropEffect.transform.rotation = Quaternion.identity;
         }
-
-        if (transform.position.y < -5.5f) {
-            Destroy(gameObject);
-        }
     }
 
     private void OnCollisionEnter2D(Collision2D other) {
         if (isControlable && other.gameObject.tag != "Wall") {
             isControlable = false;
+
             dropEffect.Stop();
             Destroy(dropEffect.gameObject, 1.0f);
 
