@@ -36,14 +36,16 @@ public class MinoController : MonoBehaviour {
             var velocity = new Vector2(rigidbody.velocity.x, -fallSpeed);
             var torque = 0.0f;
 
-            if (Input.GetKey(KeyCode.LeftArrow)) {
+            var horizontal = Input.GetAxis("Horizontal");
+            if (horizontal < 0) {
                 velocity.x -= 0.11f;
             }
-            if (Input.GetKey(KeyCode.RightArrow)) {
+            if (horizontal > 0) {
                 velocity.x += 0.11f;
             }
 
-            if (Input.GetKey(KeyCode.DownArrow)) {
+            var vertical = Input.GetAxis("Vertical");
+            if (vertical < 0) {
                 pressedFrame = Mathf.Clamp(pressedFrame + 1, 0, peekFrame);
                 fallAccelaration = Speed * softdropInCurve.Evaluate((float)pressedFrame / peekFrame);
             } else {
@@ -51,10 +53,10 @@ public class MinoController : MonoBehaviour {
                 fallAccelaration *= 0.86f;
             }
 
-            if (Input.GetKey(KeyCode.Z)) {
+            if (Input.GetButton("Rotate Left")) {
                 torque += 2.2f;
             }
-            if (Input.GetKey(KeyCode.X)) {
+            if (Input.GetButton("Rotate Right")) {
                 torque -= 2.2f;
             }
 

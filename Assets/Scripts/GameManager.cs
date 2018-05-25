@@ -26,10 +26,10 @@ public class GameManager : MonoBehaviour {
 	}
 
     public void Update() {
-        if (!useHold && Input.GetKeyDown(KeyCode.LeftShift)) {
+        if (!useHold && Input.GetAxis("Hold") != 0) {
             holdMino();
         }
-        if (Input.GetKeyDown(KeyCode.Escape)) {
+        if (Input.GetButtonDown(@"Escape")) {
             roundStart();
         }
     }
