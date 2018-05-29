@@ -19,11 +19,12 @@ public class NextMinos : MonoBehaviour {
             var index = spawner.NextIndices[i];
             var obj = Instantiate(resolver.Get(index), frames[i].position, Quaternion.identity);
             if (i > 0) {
-                obj.transform.localScale *= 0.75f;
+                obj.transform.localScale *= 0.6f;
             }
             Destroy(obj.GetComponent<MinoController>());
             Destroy(obj.GetComponent<Rigidbody2D>());
             Destroy(obj.transform.GetChild(0).gameObject);
+
             objects.Add(obj);
         }
     }

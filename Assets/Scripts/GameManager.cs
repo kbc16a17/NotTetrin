@@ -54,8 +54,12 @@ public class GameManager : MonoBehaviour {
 
     private void reset() {
         Score.Reset();
+
         MinoSpawner.Clear();
+
         HoldMino.Clear();
+        useHold = false;
+
         minos.ForEach(Destroy);
         minos.Clear();
     }
