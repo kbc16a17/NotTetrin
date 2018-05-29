@@ -3,12 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Random = UnityEngine.Random;
-
 public class MinoController : MonoBehaviour {
     private ParticleSystem dropEffect;
 
     private static float LimitAngularVelocity = 180.0f;
+    private float prevHorizontal;
 
     private bool isControlable = true;
     private bool onCeiling = false;
@@ -17,8 +16,8 @@ public class MinoController : MonoBehaviour {
 
     public AnimationCurve softdropInCurve;
     private int pressedFrame = 0;
-    private static int peekFrame = 60;
-    private static float peekAccelaration = 5.0f;
+    private static int PeekFrame = 60;
+    private static float PeekAccelaration = 5.4f;
 
     public event EventHandler Hit;
     public event EventHandler HitOnCeiling;
@@ -27,7 +26,12 @@ public class MinoController : MonoBehaviour {
     private AudioSource turnSound;
     private AudioSource hitSound;
 
+    private Score score;
+    private static int ScoreIncrementDuration = 5;
+
     public void Awake() {
+        score = GameObject.Find(@"Score").GetComponent<Score>();
+
         var sources = GetComponents<AudioSource>();
         moveSound = sources[0];
         turnSound = sources[1];
@@ -46,32 +50,39 @@ public class MinoController : MonoBehaviour {
             var velocity = new Vector2(rigidbody.velocity.x, -fallSpeed);
             var torque = 0.0f;
 
-            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)) {
+            var horizontal = Input.GetAxis(@"Horizontal");
+            if (prevHorizontal <= 0 && horizontal > 0 || prevHorizontal >= 0 && horizontal < 0) {
                 moveSound.Play();
             }
-            if (Input.GetKey(KeyCode.LeftArrow)) {
-                velocity.x -= 0.11f;
+            if (horizontal < 0) {
+                velocity.x -= 0.1f;
             }
-            if (Input.GetKey(KeyCode.RightArrow)) {
-                velocity.x += 0.11f;
+            if (horizontal > 0) {
+                velocity.x += 0.1f;
             }
+            prevHorizontal = horizontal;
 
-            if (Input.GetKey(KeyCode.DownArrow)) {
-                pressedFrame = Mathf.Clamp(pressedFrame + 1, 0, peekFrame);
-                fallAccelaration = peekAccelaration * softdropInCurve.Evaluate((float)pressedFrame / peekFrame);
+            var vertical = Input.GetAxis(@"Vertical");
+            if (vertical < 0) {
+                pressedFrame++;
+                if (pressedFrame % ScoreIncrementDuration == 0) {
+                    score.Increase(1);
+                }
+                var frames = Mathf.Clamp(pressedFrame, 0, PeekFrame);
+                fallAccelaration = PeekAccelaration * softdropInCurve.Evaluate((float)frames / PeekFrame);
             } else {
                 pressedFrame = 0;
                 fallAccelaration *= 0.86f;
             }
 
-            if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.X)) {
+            if (Input.GetButtonDown(@"Rotate Left") || Input.GetButtonDown(@"Rotate Right")) {
                 turnSound.Play();
             }
-            if (Input.GetKey(KeyCode.Z)) {
-                torque += 2.2f;
+            if (Input.GetButton(@"Rotate Left")) {
+                torque += 2.0f;
             }
-            if (Input.GetKey(KeyCode.X)) {
-                torque -= 2.2f;
+            if (Input.GetButton(@"Rotate Right")) {
+                torque -= 2.0f;
             }
 
             velocity.y -= fallAccelaration;

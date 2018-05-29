@@ -2,14 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public MinoSpawner MinoSpawner;
     public NextMinos NextMinos;
     public HoldMino HoldMino;
     public Score Score;
+    public HighScore HighScore;
 
     public UnityEvent OnRoundStart;
     public UnityEvent OnRoundEnd;
@@ -37,11 +39,11 @@ public class GameManager : MonoBehaviour {
 	}
 
     public void Update() {
-        if (!useHold && Input.GetKeyDown(KeyCode.LeftShift)) {
+        if (!useHold && Input.GetButtonDown(@"Hold")) {
             holdMino();
         }
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            roundStart();
+        if (Input.GetButtonDown(@"Escape")) {
+            SceneManager.LoadScene(@"Title");
         }
     }
 
@@ -87,6 +89,7 @@ public class GameManager : MonoBehaviour {
     }
 
     private void roundEnd() {
+        HighScore.UpdateValue();
         OnRoundEnd.Invoke();
         bgm.Stop();
         gameoverSound.Play();

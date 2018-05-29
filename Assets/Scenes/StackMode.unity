@@ -2212,6 +2212,7 @@ MonoBehaviour:
   NextMinos: {fileID: 1555931825}
   HoldMino: {fileID: 282731024}
   Score: {fileID: 958155921}
+  HighScore: {fileID: 759410317}
   OnRoundStart:
     m_PersistentCalls:
       m_Calls:
@@ -2268,7 +2269,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 485d237dd03188a418b5f748195fd038, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -2458,7 +2459,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: db4d57875f94813419383a5fedcf20ad, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.92
   m_Pitch: 1
   Loop: 0
   Mute: 0

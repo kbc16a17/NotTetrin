@@ -25,7 +25,7 @@ public class HighScore : MonoBehaviour {
     private Stopwatch animationStopwatch = new Stopwatch();
     private bool IsAnimating => animationStopwatch.IsRunning;
 
-    private int highScore;
+    private static int highScore;
 
     public event EventHandler ValueChanged;
     public int Value {
@@ -39,12 +39,11 @@ public class HighScore : MonoBehaviour {
         }
     }
 
-	void Start () {
-        score.ValueChanged += onScoreValueChanged;
-        Value = 0;
+	private void Awake () {
+        updateText();
 	}
     
-    void Update() {
+    private void Update() {
         if (IsAnimating) {
             var seconds = (float)animationStopwatch.Elapsed.TotalSeconds;
             if (seconds < animationDuration) {
@@ -59,8 +58,7 @@ public class HighScore : MonoBehaviour {
         }
     }
 
-    private void onScoreValueChanged(object sender, EventArgs args) {
-        var score = sender as Score;
+    public void UpdateValue() {
         if (score.Value > Value) {
             Value = score.Value;
             animationStopwatch.Start();

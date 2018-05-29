@@ -35,8 +35,8 @@ public class Score : MonoBehaviour {
         }
     }
 
-    public void Start () {
-        Value = 0;
+    public void Awake() {
+        updateText();
 	}
 
     public void Reset() {
