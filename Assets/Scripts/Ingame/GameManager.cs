@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using NCMB;
+// TODO
+using NotTetrin.Ingame;
 
 public class GameManager : MonoBehaviour {
     public MinoSpawner MinoSpawner;
@@ -12,6 +15,7 @@ public class GameManager : MonoBehaviour {
     public HoldMino HoldMino;
     public Score Score;
     public HighScore HighScore;
+    public Ranking Ranking;
 
     public UnityEvent OnRoundStart;
     public UnityEvent OnRoundEnd;
@@ -33,10 +37,11 @@ public class GameManager : MonoBehaviour {
         gameoverSound = sources[2];
     }
 
-    public void Start () {
+    public void Start() {
         MinoSpawner.OnSpawn += (sender, args) => NextMinos.UpdateMinos();
+        loadRanking();
         roundStart();
-	}
+    }
 
     public void Update() {
         if (!useHold && Input.GetButtonDown(@"Hold")) {
@@ -89,11 +94,27 @@ public class GameManager : MonoBehaviour {
     }
 
     private void roundEnd() {
-        HighScore.UpdateValue();
         OnRoundEnd.Invoke();
         bgm.Stop();
         gameoverSound.Play();
+
+        var updated = HighScore.UpdateValue();
+        if (updated) {
+            saveRanking();
+        }
+        Invoke("loadRanking", 3.0f);
         Invoke("roundStart", 10.0f);
+    }
+
+    private void loadRanking() {
+        Ranking.FetchRanking();
+    }
+
+    private void saveRanking() {
+        var ncmbObj = new NCMBObject(@"Ranking");
+        ncmbObj[@"name"] = Player.Name;
+        ncmbObj[@"score"] = HighScore.Value;
+        ncmbObj.SaveAsync();
     }
 
     private void changeMino(GameObject mino) {
@@ -117,7 +138,7 @@ public class GameManager : MonoBehaviour {
     }
 
     private void onMinoHit(object sender, EventArgs args) {
-        Score.Increase(100);
+        Score.Increase(200);
         nextMino();
     }
 

@@ -19,6 +19,9 @@ public class Score : MonoBehaviour {
     [SerializeField]
     private Gradient gradient;
 
+    [SerializeField]
+    private GameObject addScoreObject;
+
     private int score;
     private Stopwatch animationStopwatch = new Stopwatch();
     private bool IsAnimating => animationStopwatch.IsRunning;
@@ -62,6 +65,8 @@ public class Score : MonoBehaviour {
         Value += amount;
 
         if (amount >= 100) {
+            addScoreObject.GetComponent<Animation>().Play();
+            addScoreObject.GetComponentsInChildren<Text>()[1].text = $"{amount}";
             animationStopwatch.Start();
         }
     }

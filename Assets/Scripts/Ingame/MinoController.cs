@@ -15,7 +15,8 @@ public class MinoController : MonoBehaviour {
     private float fallAccelaration = 0.0f;
 
     public AnimationCurve softdropInCurve;
-    private int pressedFrame = 0;
+    private int pressedFrames = 0;
+    private int totalFrames = 0;
     private static int PeekFrame = 60;
     private static float PeekAccelaration = 5.4f;
 
@@ -64,14 +65,10 @@ public class MinoController : MonoBehaviour {
 
             var vertical = Input.GetAxis(@"Vertical");
             if (vertical < 0) {
-                pressedFrame++;
-                if (pressedFrame % ScoreIncrementDuration == 0) {
-                    score.Increase(1);
-                }
-                var frames = Mathf.Clamp(pressedFrame, 0, PeekFrame);
-                fallAccelaration = PeekAccelaration * softdropInCurve.Evaluate((float)frames / PeekFrame);
+                pressedFrames = Mathf.Clamp(pressedFrames + 1, 0, PeekFrame);
+                fallAccelaration = PeekAccelaration * softdropInCurve.Evaluate((float)pressedFrames / PeekFrame);
             } else {
-                pressedFrame = 0;
+                pressedFrames = 0;
                 fallAccelaration *= 0.86f;
             }
 
@@ -92,6 +89,15 @@ public class MinoController : MonoBehaviour {
             rigidbody.angularVelocity = Mathf.Clamp(rigidbody.angularVelocity, -LimitAngularVelocity, LimitAngularVelocity);
 
             dropEffect.transform.rotation = Quaternion.identity;
+
+            // Scoring
+            if (totalFrames % ScoreIncrementDuration == 0) {
+                velocity.x = 0.0f;
+                var amount = (int)(velocity.magnitude - 1.0f);
+                score.Increase(amount);
+            }
+
+            totalFrames++;
         }
     }
 

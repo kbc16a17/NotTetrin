@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
@@ -9,6 +10,8 @@ public class TitleButton : MonoBehaviour, IPointerEnterHandler {
     private AudioSource selectSound;
     [SerializeField]
     private AudioSource decideSound;
+    [SerializeField]
+    private GameObject errorMessage;
 
     public string DestinationSceneName;
 
@@ -23,6 +26,12 @@ public class TitleButton : MonoBehaviour, IPointerEnterHandler {
     }
 
     public void OnClick() {
+        // プレイヤー名が入っていない
+        if (string.IsNullOrWhiteSpace(Player.Name)) {
+            errorMessage.SetActive(true);
+            return;
+        }
+
         decideSound.Play();
         SceneManager.LoadScene(DestinationSceneName);
     }

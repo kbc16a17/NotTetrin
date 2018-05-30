@@ -58,11 +58,14 @@ public class HighScore : MonoBehaviour {
         }
     }
 
-    public void UpdateValue() {
+    public bool UpdateValue() {
         if (score.Value > Value) {
             Value = score.Value;
             animationStopwatch.Start();
+            return true;
         }
+
+        return false;
     }
 
     private void updateText() {
