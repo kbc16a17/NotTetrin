@@ -8,6 +8,8 @@ public class InputManager : MonoBehaviour {
     private InputField nameField;
 
     public void Start() {
-        nameField.text = Player.Name;
+        if (PlayerPrefs.HasKey(@"name")) {
+            nameField.text = PlayerPrefs.GetString(@"name");
+        }
     }
 }

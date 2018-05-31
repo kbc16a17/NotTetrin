@@ -25,15 +25,16 @@ public class HighScore : MonoBehaviour {
     private Stopwatch animationStopwatch = new Stopwatch();
     private bool IsAnimating => animationStopwatch.IsRunning;
 
-    private static int highScore;
-
     public event EventHandler ValueChanged;
     public int Value {
         get {
-            return highScore;
+            if (PlayerPrefs.HasKey(@"high_score")) {
+                return PlayerPrefs.GetInt(@"high_score");
+            }
+            return 0;
         }
         private set {
-            highScore = value;
+            PlayerPrefs.SetInt(@"high_score", value);
             updateText();
             ValueChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -69,6 +70,6 @@ public class HighScore : MonoBehaviour {
     }
 
     private void updateText() {
-        text.text = string.Format("{0:0000000}", highScore);
+        text.text = string.Format("{0:0000000}", Value);
     }
 }

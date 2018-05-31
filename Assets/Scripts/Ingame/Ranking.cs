@@ -12,7 +12,7 @@ namespace NotTetrin.Ingame {
         [SerializeField]
         private Text textField;
 
-        List<Ranker> rankers = new List<Ranker>();
+        private List<Ranker> rankers = new List<Ranker>();
         
         public void FetchRanking() {
             var query = new NCMBQuery<NCMBObject>(@"Ranking");

@@ -2439,6 +2439,11 @@ MonoBehaviour:
   Score: {fileID: 958155921}
   HighScore: {fileID: 759410317}
   Ranking: {fileID: 2121170700}
+  bgmClips:
+  - {fileID: 8300000, guid: 485d237dd03188a418b5f748195fd038, type: 3}
+  - {fileID: 8300000, guid: 3a614bb61de34944e850007db9959fb2, type: 3}
+  - {fileID: 8300000, guid: 15174b5324ccf3d42893e190236bad32, type: 3}
+  - {fileID: 8300000, guid: 35e5a9df047d196428c01996d9589e8b, type: 3}
   OnRoundStart:
     m_PersistentCalls:
       m_Calls:
@@ -2493,7 +2498,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 485d237dd03188a418b5f748195fd038, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.8
   m_Pitch: 1

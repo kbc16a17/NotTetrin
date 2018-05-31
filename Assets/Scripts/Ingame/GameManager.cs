@@ -8,6 +8,9 @@ using UnityEngine.SceneManagement;
 using NCMB;
 // TODO
 using NotTetrin.Ingame;
+using NotTetrin.Utility;
+
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour {
     public MinoSpawner MinoSpawner;
@@ -16,6 +19,9 @@ public class GameManager : MonoBehaviour {
     public Score Score;
     public HighScore HighScore;
     public Ranking Ranking;
+
+    [SerializeField]
+    private AudioClip[] bgmClips;
 
     public UnityEvent OnRoundStart;
     public UnityEvent OnRoundEnd;
@@ -88,7 +94,12 @@ public class GameManager : MonoBehaviour {
     private void roundStart() {
         reset();
         OnRoundStart.Invoke();
+
+        var clipIndex = Random.Range(0, bgmClips.Length - 1);
+        bgm.clip = bgmClips[clipIndex];
+        Debug.Log($"Playing theme{clipIndex + 1}");
         bgm.Play();
+
         startSound.Play();
         nextMino();
     }
@@ -112,9 +123,14 @@ public class GameManager : MonoBehaviour {
 
     private void saveRanking() {
         var ncmbObj = new NCMBObject(@"Ranking");
-        ncmbObj[@"name"] = Player.Name;
+        ncmbObj[@"name"] = PlayerPrefs.GetString(@"name");
         ncmbObj[@"score"] = HighScore.Value;
-        ncmbObj.SaveAsync();
+        if (PlayerPrefs.HasKey(@"object_id")) {
+            ncmbObj.ObjectId = PlayerPrefs.GetString(@"object_id");
+            ncmbObj.SaveAsync();
+        } else {
+            ncmbObj.SaveAsync((NCMBException e) => PlayerPrefs.SetString(@"object_id", ncmbObj.ObjectId));
+        }
     }
 
     private void changeMino(GameObject mino) {

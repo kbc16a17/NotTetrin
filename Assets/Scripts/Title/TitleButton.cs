@@ -11,6 +11,8 @@ public class TitleButton : MonoBehaviour, IPointerEnterHandler {
     [SerializeField]
     private AudioSource decideSound;
     [SerializeField]
+    private InputField nameField;
+    [SerializeField]
     private GameObject errorMessage;
 
     public string DestinationSceneName;
@@ -27,10 +29,12 @@ public class TitleButton : MonoBehaviour, IPointerEnterHandler {
 
     public void OnClick() {
         // プレイヤー名が入っていない
-        if (string.IsNullOrWhiteSpace(Player.Name)) {
+        if (string.IsNullOrWhiteSpace(nameField.text)) {
             errorMessage.SetActive(true);
             return;
         }
+
+        PlayerPrefs.SetString(@"name", nameField.text);
 
         decideSound.Play();
         SceneManager.LoadScene(DestinationSceneName);
