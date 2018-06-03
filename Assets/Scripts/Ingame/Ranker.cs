@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace NotTetrin.Ingame {
     public class Ranker {
-        private string name;
-        private int score;
+        public string Name { get; }
+        public int Score { get; }
 
         public Ranker(string name, int score) {
-            this.name = name;
-            this.score = score;
+            this.Name = name;
+            this.Score = score;
         }
 
         public override string ToString() {
-            return $"{name}: {score}";
+            return $"{Name}: {Score}";
         }
     }
 }

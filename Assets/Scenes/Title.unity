@@ -1828,7 +1828,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nameField: {fileID: 1040593947}
-  titleView: {fileID: 0}
+  titleView: {fileID: 1701013988}
 --- !u!1 &1288023010
 GameObject:
   m_ObjectHideFlags: 0

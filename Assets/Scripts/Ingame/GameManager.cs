@@ -36,20 +36,20 @@ public class GameManager : MonoBehaviour {
     private AudioSource startSound;
     private AudioSource gameoverSound;
 
-    public void Awake() {
+    private void Awake() {
         var sources = GetComponents<AudioSource>();
         bgm = sources[0];
         startSound = sources[1];
         gameoverSound = sources[2];
     }
 
-    public void Start() {
+    private void Start() {
         MinoSpawner.OnSpawn += (sender, args) => NextMinos.UpdateMinos();
         loadRanking();
         roundStart();
     }
 
-    public void Update() {
+    private void Update() {
         if (!useHold && Input.GetButtonDown(@"Hold")) {
             holdMino();
         }
@@ -118,19 +118,14 @@ public class GameManager : MonoBehaviour {
     }
 
     private void loadRanking() {
-        Ranking.FetchRanking();
+        Ranking.Fetch();
     }
 
     private void saveRanking() {
-        var ncmbObj = new NCMBObject(@"Ranking");
-        ncmbObj[@"name"] = PlayerPrefs.GetString(@"name");
-        ncmbObj[@"score"] = HighScore.Value;
-        if (PlayerPrefs.HasKey(@"object_id")) {
-            ncmbObj.ObjectId = PlayerPrefs.GetString(@"object_id");
-            ncmbObj.SaveAsync();
-        } else {
-            ncmbObj.SaveAsync((NCMBException e) => PlayerPrefs.SetString(@"object_id", ncmbObj.ObjectId));
-        }
+        var name = PlayerPrefs.GetString(@"name");
+        var score = HighScore.Value;
+        var ranker = new Ranker(name, score);
+        Ranking.Save(ranker);
     }
 
     private void changeMino(GameObject mino) {

@@ -3,125 +3,127 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MinoController : MonoBehaviour {
-    private ParticleSystem dropEffect;
+namespace NotTetrin.Ingame {
+    public class MinoController : MonoBehaviour {
+        private ParticleSystem dropEffect;
 
-    private static float LimitAngularVelocity = 180.0f;
-    private float prevHorizontal;
+        private static float LimitAngularVelocity = 180.0f;
+        private float prevHorizontal;
 
-    private bool isControlable = true;
-    private bool onCeiling = false;
-    private float fallSpeed = 1.5f;
-    private float fallAccelaration = 0.0f;
+        private bool isControlable = true;
+        private bool onCeiling = false;
+        private float fallSpeed = 1.5f;
+        private float fallAccelaration = 0.0f;
 
-    public AnimationCurve softdropInCurve;
-    private int pressedFrames = 0;
-    private int totalFrames = 0;
-    private static int PeekFrame = 60;
-    private static float PeekAccelaration = 5.4f;
+        public AnimationCurve softdropInCurve;
+        private int pressedFrames = 0;
+        private int totalFrames = 0;
+        private static int PeekFrame = 60;
+        private static float PeekAccelaration = 5.4f;
 
-    public event EventHandler Hit;
-    public event EventHandler HitOnCeiling;
+        public event EventHandler Hit;
+        public event EventHandler HitOnCeiling;
 
-    private AudioSource moveSound;
-    private AudioSource turnSound;
-    private AudioSource hitSound;
+        private AudioSource moveSound;
+        private AudioSource turnSound;
+        private AudioSource hitSound;
 
-    private Score score;
-    private static int ScoreIncrementDuration = 5;
+        private Score score;
+        private static int ScoreIncrementDuration = 5;
 
-    public void Awake() {
-        score = GameObject.Find(@"Score").GetComponent<Score>();
+        public void Awake() {
+            score = GameObject.Find(@"Score").GetComponent<Score>();
 
-        var sources = GetComponents<AudioSource>();
-        moveSound = sources[0];
-        turnSound = sources[1];
-        hitSound = sources[2];
+            var sources = GetComponents<AudioSource>();
+            moveSound = sources[0];
+            turnSound = sources[1];
+            hitSound = sources[2];
 
-        dropEffect = GetComponentInChildren<ParticleSystem>();
-    }
-
-    public void Start() {
-        dropEffect.Play();
-    }
-
-    public void Update() {
-        if (isControlable) {
-            var rigidbody = GetComponent<Rigidbody2D>();
-            var velocity = new Vector2(rigidbody.velocity.x, -fallSpeed);
-            var torque = 0.0f;
-
-            var horizontal = Input.GetAxis(@"Horizontal");
-            if (prevHorizontal <= 0 && horizontal > 0 || prevHorizontal >= 0 && horizontal < 0) {
-                moveSound.Play();
-            }
-            if (horizontal < 0) {
-                velocity.x -= 0.1f;
-            }
-            if (horizontal > 0) {
-                velocity.x += 0.1f;
-            }
-            prevHorizontal = horizontal;
-
-            var vertical = Input.GetAxis(@"Vertical");
-            if (vertical < 0) {
-                pressedFrames = Mathf.Clamp(pressedFrames + 1, 0, PeekFrame);
-                fallAccelaration = PeekAccelaration * softdropInCurve.Evaluate((float)pressedFrames / PeekFrame);
-            } else {
-                pressedFrames = 0;
-                fallAccelaration *= 0.86f;
-            }
-
-            if (Input.GetButtonDown(@"Rotate Left") || Input.GetButtonDown(@"Rotate Right")) {
-                turnSound.Play();
-            }
-            if (Input.GetButton(@"Rotate Left")) {
-                torque += 2.0f;
-            }
-            if (Input.GetButton(@"Rotate Right")) {
-                torque -= 2.0f;
-            }
-
-            velocity.y -= fallAccelaration;
-
-            rigidbody.AddTorque(torque);
-            rigidbody.velocity = velocity;
-            rigidbody.angularVelocity = Mathf.Clamp(rigidbody.angularVelocity, -LimitAngularVelocity, LimitAngularVelocity);
-
-            dropEffect.transform.rotation = Quaternion.identity;
-
-            // Scoring
-            if (totalFrames % ScoreIncrementDuration == 0) {
-                velocity.x = 0.0f;
-                var amount = (int)(velocity.magnitude - 1.0f);
-                score.Increase(amount);
-            }
-
-            totalFrames++;
+            dropEffect = GetComponentInChildren<ParticleSystem>();
         }
-    }
 
-    private void OnCollisionEnter2D(Collision2D other) {
-        if (isControlable && other.gameObject.tag != "Wall") {
-            isControlable = false;
+        public void Start() {
+            dropEffect.Play();
+        }
 
-            hitSound.Play();
-            dropEffect.Stop();
-            Destroy(dropEffect.gameObject, 1.0f);
+        public void Update() {
+            if (isControlable) {
+                var rigidbody = GetComponent<Rigidbody2D>();
+                var velocity = new Vector2(rigidbody.velocity.x, -fallSpeed);
+                var torque = 0.0f;
 
-            if (onCeiling) {
-                HitOnCeiling?.Invoke(this, EventArgs.Empty);
-            } else {
-                Hit?.Invoke(this, EventArgs.Empty);
+                var horizontal = Input.GetAxis(@"Horizontal");
+                if (prevHorizontal <= 0 && horizontal > 0 || prevHorizontal >= 0 && horizontal < 0) {
+                    moveSound.Play();
+                }
+                if (horizontal < 0) {
+                    velocity.x -= 0.1f;
+                }
+                if (horizontal > 0) {
+                    velocity.x += 0.1f;
+                }
+                prevHorizontal = horizontal;
+
+                var vertical = Input.GetAxis(@"Vertical");
+                if (vertical < 0) {
+                    pressedFrames = Mathf.Clamp(pressedFrames + 1, 0, PeekFrame);
+                    fallAccelaration = PeekAccelaration * softdropInCurve.Evaluate((float)pressedFrames / PeekFrame);
+                } else {
+                    pressedFrames = 0;
+                    fallAccelaration *= 0.86f;
+                }
+
+                if (Input.GetButtonDown(@"Rotate Left") || Input.GetButtonDown(@"Rotate Right")) {
+                    turnSound.Play();
+                }
+                if (Input.GetButton(@"Rotate Left")) {
+                    torque += 2.0f;
+                }
+                if (Input.GetButton(@"Rotate Right")) {
+                    torque -= 2.0f;
+                }
+
+                velocity.y -= fallAccelaration;
+
+                rigidbody.AddTorque(torque);
+                rigidbody.velocity = velocity;
+                rigidbody.angularVelocity = Mathf.Clamp(rigidbody.angularVelocity, -LimitAngularVelocity, LimitAngularVelocity);
+
+                dropEffect.transform.rotation = Quaternion.identity;
+
+                // Scoring
+                if (totalFrames % ScoreIncrementDuration == 0) {
+                    velocity.x = 0.0f;
+                    var amount = (int)(velocity.magnitude - 1.0f);
+                    score.Increase(amount);
+                }
+
+                totalFrames++;
             }
         }
-    }
 
-    private void OnTriggerEnter2D(Collider2D collision) {
-        onCeiling = true;
-    }
+        private void OnCollisionEnter2D(Collision2D other) {
+            if (isControlable && other.gameObject.tag != "Wall") {
+                isControlable = false;
 
-    private void OnTriggerExit2D(Collider2D collision) {
-        onCeiling = false;
+                hitSound.Play();
+                dropEffect.Stop();
+                Destroy(dropEffect.gameObject, 1.0f);
+
+                if (onCeiling) {
+                    HitOnCeiling?.Invoke(this, EventArgs.Empty);
+                } else {
+                    Hit?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision) {
+            onCeiling = true;
+        }
+
+        private void OnTriggerExit2D(Collider2D collision) {
+            onCeiling = false;
+        }
     }
 }

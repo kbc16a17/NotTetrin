@@ -4,74 +4,50 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Stopwatch = System.Diagnostics.Stopwatch;
+namespace NotTetrin.Ingame {
+    public class Score : MonoBehaviour {
+        [SerializeField]
+        private Text text;
+        [SerializeField]
+        private GameObject addScoreObject;
 
-public class Score : MonoBehaviour {
-    [SerializeField]
-    private Text text;
-    [SerializeField]
-    private AnimationCurve animationCurve;
-    [SerializeField]
-    private float animationDuration;
+        private Animator animator;
 
-    private static Vector2 START_SCALE = new Vector2(1.0f, 1.25f);
-    private static Vector2 END_SCALE = new Vector2(1.0f, 1.0f);
-    [SerializeField]
-    private Gradient gradient;
+        private int score;
 
-    [SerializeField]
-    private GameObject addScoreObject;
-
-    private int score;
-    private Stopwatch animationStopwatch = new Stopwatch();
-    private bool IsAnimating => animationStopwatch.IsRunning;
-
-    public event EventHandler ValueChanged;
-    public int Value {
-        get {
-            return score;
-        }
-        private set {
-            score = value;
-            updateText();
-            ValueChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
-    public void Awake() {
-        updateText();
-	}
-
-    public void Reset() {
-        Value = 0;
-    }
-
-    public void Update() {
-        if (IsAnimating) {
-            var seconds = (float)animationStopwatch.Elapsed.TotalSeconds;
-            if (seconds < animationDuration) {
-                var t = animationCurve.Evaluate(seconds / animationDuration);
-                text.rectTransform.localScale = Vector2.Lerp(START_SCALE, END_SCALE, t);
-                text.color = gradient.Evaluate(t);
-            } else {
-                text.rectTransform.localScale = END_SCALE;
-                text.color = gradient.Evaluate(1.0f);
-                animationStopwatch.Reset();
+        public event EventHandler ValueChanged;
+        public int Value {
+            get {
+                return score;
+            }
+            private set {
+                score = value;
+                updateText();
+                ValueChanged?.Invoke(this, EventArgs.Empty);
             }
         }
-    }
 
-    public void Increase(int amount) {
-        Value += amount;
-
-        if (amount >= 100) {
-            addScoreObject.GetComponent<Animation>().Play();
-            addScoreObject.GetComponentsInChildren<Text>()[1].text = $"{amount}";
-            animationStopwatch.Start();
+        public void Awake() {
+            animator = GetComponent<Animator>();
+            updateText();
         }
-    }
 
-    private void updateText() {
-        text.text = string.Format("{0:0000000}", score);
+        public void Reset() {
+            Value = 0;
+        }
+
+        public void Increase(int amount) {
+            Value += amount;
+
+            if (amount >= 100) {
+                addScoreObject.GetComponent<Animation>().Play();
+                addScoreObject.GetComponentsInChildren<Text>()[1].text = $"{amount}";
+                animator.Play(@"ScoreIncrement", 0, 0.0f);
+            }
+        }
+
+        private void updateText() {
+            text.text = string.Format("{0:0000000}", score);
+        }
     }
 }

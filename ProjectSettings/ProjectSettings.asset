@@ -89,7 +89,7 @@ PlayerSettings:
   xboxEnableKinectAutoTracking: 0
   xboxEnableFitness: 0
   visibleInBackground: 1
-  allowFullscreenSwitch: 0
+  allowFullscreenSwitch: 1
   graphicsJobMode: 0
   fullscreenMode: 3
   xboxSpeechDB: 0
@@ -617,9 +617,9 @@ PlayerSettings:
     UNet: 1
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 3
-  cloudProjectId: 848a192e-5a25-47b4-890c-4bcfb96f0359
+  cloudProjectId: 4c972542-7d47-4219-b769-4d9d2bc29107
   projectName: NotTetrin
-  organizationId: kbc16a17
+  organizationId: blueapple25130
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
